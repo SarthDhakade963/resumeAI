@@ -157,7 +157,7 @@ export default function AuthForm({ onClose }: { onClose: () => void }) {
               </button>
             </p>
           </div>
-          <Button className="w-full mt-5 hover:bg-gray-500 text-white py-2 rounded">
+          <Button className="w-full mt-1 hover:bg-gray-500 text-white py-2 rounded">
             Submit
           </Button>
         </form>
