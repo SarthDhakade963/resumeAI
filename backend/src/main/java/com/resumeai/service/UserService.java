@@ -1,12 +1,19 @@
 package com.resumeai.service;
 
-import com.resumeai.dto.AuthResponse;
-import com.resumeai.dto.SignInRequest;
-import com.resumeai.dto.SignUpRequest;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import com.resumeai.model.User;
+
+import java.util.Optional;
+
 
 public interface UserService {
-    AuthResponse signup(SignUpRequest request);
-    AuthResponse signin(SignInRequest request);
+
+    public void save(User user);
+
+    Optional<User> findByEmail(String email);
+
+    public User createOAuthUser(String email, String name, String provider, String providerId);
+
+    public Optional<User> validateCredentials(String email, String password);
+
+    public Optional<User> findById(Long id);
 }

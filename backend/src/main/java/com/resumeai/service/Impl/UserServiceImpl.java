@@ -1,63 +1,73 @@
 package com.resumeai.service.Impl;
 
-import com.resumeai.dto.AuthResponse;
-import com.resumeai.dto.SignInRequest;
-import com.resumeai.dto.SignUpRequest;
 import com.resumeai.model.User;
 import com.resumeai.repository.UserRepository;
-import com.resumeai.security.jwt.JwtService;
 import com.resumeai.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public AuthResponse signup(SignUpRequest request) {
-
-        if(userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email is already registered.");
-        }
-
-        if(userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new RuntimeException("Username is already registered.");
-        }
-
-        User user = new User();
-
-        user.setEmail(request.getEmail());
-
-        user.setUsername(request.getUsername());
-
-        String hashedPassword = passwordEncoder.encode(request.getPassword());
-        user.setPassword(hashedPassword);
-
+    public void save(User user) {
         userRepository.save(user);
-        
-        String token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+    }
+
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
-    public AuthResponse signin(SignInRequest request) {
-
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
-
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid Credentials /userServiceImpl");
-        }
-
-        String token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+    public User createOAuthUser(String email, String name, String provider, String providerId) {
+        User user = User.builder()
+                .email(email)
+                .username(name != null ? name : email) // fallback
+                .password(null) // no password for OAuth
+                .isProfileComplete(false)
+                .build();
+        return userRepository.save(user);
     }
+
+    @Override
+    public Optional<User> validateCredentials(String email, String password) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+
+        System.out.println(userOpt);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (user.getPassword() != null && passwordEncoder.matches(password, user.getPassword())) {
+                return Optional.of(user);
+            } else {
+                return Optional.empty(); // password mismatch
+            }
+        } else {
+            // User not found, auto-create user (sign-up)
+            User newUser = new User();
+            newUser.setEmail(email);
+            newUser.setPassword(passwordEncoder.encode(password));
+
+            System.out.println(newUser);
+
+            userRepository.save(newUser);
+            return Optional.of(newUser);
+        }
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+
+
 }

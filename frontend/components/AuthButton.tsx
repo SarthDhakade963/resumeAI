@@ -3,18 +3,32 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button"; // or use <button> directly
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AuthForm from "./AuthForm";
+import { useRouter } from "next/navigation";
+import Loading from "./Loading";
 
 export default function AuthButton() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [show, setShow] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    // if already logged in, check backend for profile status
+    if (status === "authenticated") {
+      // we will call backend to check profile (using fetchWithToken from client)
+      router.push("/check-profile"); // leight weight page that resolves profile check
+    }
+  }, [status, router]);
+
+  if (status === "loading") return <Loading />;
 
   if (session) {
     return (
       <div className="flex flex-col items-center gap-2">
-        <p>Welcome, {session.user?.name}</p>
-        <button onClick={() => signOut()}>Sign out</button>
+        <p>Welcome</p>
+        <p>{session.user?.name}</p>
+        <Button onClick={() => signOut()}>Sign out</Button>
       </div>
     );
   } else {
@@ -62,10 +76,10 @@ export default function AuthButton() {
         </div>
 
         <Button
-          className="px-6 py-3 w-full max-w-xs  text-white rounded-md hover:bg-gray-400 transition"
+          className="px-2 py-1 w-full max-w-xs  text-white rounded-md hover:bg-gray-400 transition"
           onClick={() => setShow(true)}
         >
-          Login/Signup
+          Login
         </Button>
 
         {show && <AuthForm onClose={() => setShow(false)} />}
