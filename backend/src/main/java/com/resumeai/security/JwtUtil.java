@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 
 @Component
@@ -24,7 +25,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(Long id, String email) {
+    public String generateToken(UUID id, String email) {
         // 7 days
         long EXPIRATION = 1000L * 60 * 60 * 24 * 7;
         return Jwts.builder()

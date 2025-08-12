@@ -3,6 +3,7 @@ package com.resumeai.service;
 import com.resumeai.model.User;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
 public interface UserService {
@@ -15,5 +16,5 @@ public interface UserService {
 
     public Optional<User> validateCredentials(String email, String password);
 
-    public Optional<User> findById(Long id);
+    public Optional<User> findById(UUID id);
 }

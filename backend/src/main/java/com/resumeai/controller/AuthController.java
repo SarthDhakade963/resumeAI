@@ -39,7 +39,7 @@ public class AuthController {
                     String token = jwtUtil.generateToken(user.getId(), user.getEmail());
                     return ResponseEntity.ok(UserMapper.toAuthResponse(user, token));
                 }
-        ).orElse(ResponseEntity.status(401).body(new AuthResponseDTO(0, null, null, null, "Invalid Credentials")));
+        ).orElse(ResponseEntity.status(401).body(new AuthResponseDTO(null, null, null, null, "Invalid Credentials")));
      }
 
     @PostMapping("/oauth-login")
@@ -54,7 +54,7 @@ public class AuthController {
 
          if(user == null) {
              return ResponseEntity.status(500)
-                     .body(new AuthResponseDTO(0, null, null, null, "Unable to create or retrieve user"));
+                     .body(new AuthResponseDTO(null, null, null, null, "Unable to create or retrieve user"));
          }
 
          // Generate Spring JWT
@@ -92,7 +92,7 @@ public class AuthController {
             User user = userOpt.get();
 
             // Check profile completion logic
-            boolean isProfileComplete = user.isProfileComplete();
+            boolean isProfileComplete = user.isAuthProfileComplete();
 
             System.out.println();
 
@@ -133,7 +133,7 @@ public class AuthController {
                     user.getUsername(),
                     user.getEmail(),
                     imageUrl,
-                    user.isProfileComplete()
+                    user.isAuthProfileComplete()
             );
 
             return ResponseEntity.ok(dto);
@@ -160,6 +160,7 @@ public class AuthController {
             }
 
             String email = jwtUtil.getEmailFromToken(token);
+
             Optional<User> userOpt = userService.findByEmail(email);
 
             if (userOpt.isEmpty()) {
@@ -176,7 +177,7 @@ public class AuthController {
                 user.setProfilePicUrl(profilePicUrl);
             }
 
-            user.setProfileComplete(true);
+            user.setAuthProfileComplete(true);
 
             System.out.println("Profile before saving : " + user);
 

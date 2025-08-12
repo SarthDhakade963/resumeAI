@@ -154,7 +154,7 @@ public class SecurityConfig {
                 newUser.setEmail(email);
                 newUser.setUsername((String) oAuthUser.getAttributes().get("localizedFirstName"));
                 newUser.setProfilePicUrl(null); // you could fetch image from LinkedIn API
-                newUser.setProfileComplete(false);
+                newUser.setAuthProfileComplete(false);
                 userService.save(newUser);
                 return newUser;
             });

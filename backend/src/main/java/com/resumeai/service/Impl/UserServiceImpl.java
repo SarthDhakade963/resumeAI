@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +21,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
                 .email(email)
                 .username(name != null ? name : email) // fallback
                 .password(null) // no password for OAuth
-                .isProfileComplete(false)
+                .isAuthProfileComplete(false)
                 .build();
         return userRepository.save(user);
     }
@@ -64,10 +64,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(UUID id) {
         return userRepository.findById(id);
     }
-
-
-
 }
