@@ -1,0 +1,71 @@
+####################################
+# OS-specific
+####################################
+.DS_Store
+Thumbs.db
+
+####################################
+# IDEs & Editors
+####################################
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+####################################
+# Environment & Security Files
+####################################
+*.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+application.properties
+application.yml
+application-*.properties
+application-*.yml
+
+####################################
+# Logs
+####################################
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+####################################
+# Java / Spring Boot
+####################################
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Gradle (if used)
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Compiled class & packages
+*.class
+*.jar
+*.war
+*.ear
+
+####################################
+# Node.js / Next.js
+####################################
+node_modules/
+.next/
+out/
+
+# TypeScript cache
+*.tsbuildinfo
