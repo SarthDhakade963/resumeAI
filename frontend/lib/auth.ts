@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
           );
 
           console.log("Response status:", res.status);
-          
+
           if (!res.ok) {
             const text = await res.text();
             console.error("Login failed response text:", text);
@@ -134,7 +134,6 @@ export const authOptions: NextAuthOptions = {
             token.email = springUsr.email; // Spring JWT
             token.name = springUsr.username;
           }
-
         } catch (error) {
           console.error("OAuth → Spring exchange failed", error);
         }
@@ -146,6 +145,14 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.accessToken = token.accessToken;
       return session;
+    },
+
+    async redirect({ url, baseUrl }) {
+      // If error is in URL, redirect to /home
+      if (url.includes("error=OAuthCallback")) {
+        return `${baseUrl}/home`;
+      }
+      return baseUrl;
     },
   },
 

@@ -73,7 +73,7 @@ public class AuthController {
             }
 
             String token = authHeader.substring(7);
-            System.out.println("Token : " + token);
+            System.out.println("Token (validating user) : " + token);
 
             if (!jwtUtil.validToken(token)) {
                 return ResponseEntity.status(401).body("Invalid token or expired to");
