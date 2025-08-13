@@ -10,7 +10,6 @@ import java.util.UUID;
 public class AuthResponseDTO {
     private UUID id;
     private String email;
-    private String username;
     private String accessToken;
     private String error;
 }

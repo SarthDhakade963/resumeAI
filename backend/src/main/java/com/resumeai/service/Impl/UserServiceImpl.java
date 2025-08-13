@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
             System.out.println(newUser);
 
             userRepository.save(newUser);
+
             return Optional.of(newUser);
         }
     }

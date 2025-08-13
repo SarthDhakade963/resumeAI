@@ -1,5 +1,6 @@
 package com.resumeai.model;
 
+import com.resumeai.model.superclass.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,35 +15,37 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "resumes")
-public class Resume {
+public class Resume extends Auditable {
 
     @Id
     @GeneratedValue
-    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(nullable = false)
     private String title;
 
     // Many resumes belong to one user
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // One resume has many work experiences
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<WorkExperience> workExperiences = new ArrayList<>();
 
     // One resume has many education entries
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Education> educations = new ArrayList<>();
 
     // One resume has many skills
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Skill> skills = new ArrayList<>();
 
     // One resume has many projects
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Project> projects = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)

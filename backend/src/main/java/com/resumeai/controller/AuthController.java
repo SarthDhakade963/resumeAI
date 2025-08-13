@@ -39,7 +39,7 @@ public class AuthController {
                     String token = jwtUtil.generateToken(user.getId(), user.getEmail());
                     return ResponseEntity.ok(UserMapper.toAuthResponse(user, token));
                 }
-        ).orElse(ResponseEntity.status(401).body(new AuthResponseDTO(null, null, null, null, "Invalid Credentials")));
+        ).orElse(ResponseEntity.status(401).body(new AuthResponseDTO(null, null, null,  "Invalid Credentials")));
      }
 
     @PostMapping("/oauth-login")
@@ -54,7 +54,7 @@ public class AuthController {
 
          if(user == null) {
              return ResponseEntity.status(500)
-                     .body(new AuthResponseDTO(null, null, null, null, "Unable to create or retrieve user"));
+                     .body(new AuthResponseDTO(null, null, null,  "Unable to create or retrieve user"));
          }
 
          // Generate Spring JWT

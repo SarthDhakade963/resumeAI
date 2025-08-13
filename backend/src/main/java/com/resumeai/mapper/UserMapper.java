@@ -9,7 +9,6 @@ public class UserMapper {
         return new AuthResponseDTO(
                 user.getId(),
                 user.getEmail(),
-                user.getUsername(),
                 token,
                 null // success, no error
         );

@@ -5,6 +5,7 @@ import { NextAuthOptions } from "next-auth";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { User as NextAuthUser } from "next-auth";
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -63,7 +64,6 @@ export const authOptions: NextAuthOptions = {
           return {
             id: user.id, // make sure it's a string
             email: user.email,
-            name: user.name ?? undefined,
             accessToken: user.accessToken,
           };
         } catch (error) {
@@ -148,9 +148,10 @@ export const authOptions: NextAuthOptions = {
     },
 
     async redirect({ url, baseUrl }) {
+      
       // If error is in URL, redirect to /home
       if (url.includes("error=OAuthCallback")) {
-        return `${baseUrl}/home`;
+        return `http:localhost:3000/home`;
       }
       return baseUrl;
     },
