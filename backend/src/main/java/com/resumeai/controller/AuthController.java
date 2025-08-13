@@ -42,7 +42,7 @@ public class AuthController {
         ).orElse(ResponseEntity.status(401).body(new AuthResponseDTO(0, null, null, null, "Invalid Credentials")));
      }
 
-     @PostMapping("/oauth-login")
+    @PostMapping("/oauth-login")
     public ResponseEntity<AuthResponseDTO> oauthLogin(@Valid @RequestBody OAuthLoginRequestDTO req) {
         // find or create user
          User user = userService.findByEmail(req.getEmail()).orElseGet(() -> userService.createOAuthUser(
