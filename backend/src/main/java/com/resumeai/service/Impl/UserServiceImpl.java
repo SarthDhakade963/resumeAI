@@ -1,5 +1,7 @@
 package com.resumeai.service.Impl;
 
+import com.resumeai.dto.UserDTO;
+import com.resumeai.mapper.UserMapper;
 import com.resumeai.model.User;
 import com.resumeai.repository.UserRepository;
 import com.resumeai.service.UserService;
@@ -62,10 +64,5 @@ public class UserServiceImpl implements UserService {
 
             return Optional.of(newUser);
         }
-    }
-
-    @Override
-    public Optional<User> findById(UUID id) {
-        return userRepository.findById(id);
     }
 }

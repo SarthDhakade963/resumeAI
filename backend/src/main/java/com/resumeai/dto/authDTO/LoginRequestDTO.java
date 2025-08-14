@@ -1,4 +1,4 @@
-package com.resumeai.dto;
+package com.resumeai.dto.authDTO;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

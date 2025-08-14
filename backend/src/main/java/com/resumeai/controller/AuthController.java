@@ -1,8 +1,8 @@
 package com.resumeai.controller;
 
-import com.resumeai.dto.AuthResponseDTO;
-import com.resumeai.dto.LoginRequestDTO;
-import com.resumeai.dto.OAuthLoginRequestDTO;
+import com.resumeai.dto.authDTO.AuthResponseDTO;
+import com.resumeai.dto.authDTO.LoginRequestDTO;
+import com.resumeai.dto.authDTO.OAuthLoginRequestDTO;
 import com.resumeai.dto.UserDTO;
 import com.resumeai.mapper.UserMapper;
 import com.resumeai.model.User;
@@ -12,6 +12,7 @@ import com.resumeai.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,9 @@ import java.util.Optional;
 @RequestMapping("/auth")
 @RequiredArgsConstructor  // Lombok will generate constructor with required fields (final or @NonNull)
 public class AuthController {
+
+    @Value("${base.url}")
+    private String baseUrl;
 
     private final UserService userService;  // Use constructor injection (preferred over @Autowired)
     private final JwtUtil jwtUtil;
@@ -117,6 +121,7 @@ public class AuthController {
 
             String email = jwtUtil.getEmailFromToken(token);
             Optional<User> userOpt = userService.findByEmail(email);
+
             if (userOpt.isEmpty()) {
                 return ResponseEntity.status(401).body("User not found");
             }
@@ -126,14 +131,13 @@ public class AuthController {
             // Build DTO (prefix base URL for image path)
             String imageUrl = user.getProfilePicUrl();
             if (imageUrl != null && !imageUrl.startsWith("http")) {
-                imageUrl = System.getenv("BASE_URL") + imageUrl; // e.g., http://localhost:8080
+                imageUrl = baseUrl + imageUrl; // e.g., http://localhost:8080
             }
 
             UserDTO dto = new UserDTO(
                     user.getUsername(),
                     user.getEmail(),
-                    imageUrl,
-                    user.isAuthProfileComplete()
+                    imageUrl
             );
 
             return ResponseEntity.ok(dto);

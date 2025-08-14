@@ -26,8 +26,8 @@ public class Skill {
 
     private String proficiency;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resume_id", nullable = false)
-    private Resume resume;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 }

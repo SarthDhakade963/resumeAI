@@ -1,5 +1,6 @@
 package com.resumeai.service;
 
+import com.resumeai.dto.UserDTO;
 import com.resumeai.model.User;
 
 import java.util.Optional;
@@ -15,6 +16,4 @@ public interface UserService {
     public User createOAuthUser(String email, String name, String provider, String providerId);
 
     public Optional<User> validateCredentials(String email, String password);
-
-    public Optional<User> findById(UUID id);
 }

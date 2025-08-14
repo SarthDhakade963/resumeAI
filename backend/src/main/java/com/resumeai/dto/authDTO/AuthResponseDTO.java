@@ -1,4 +1,4 @@
-package com.resumeai.dto;
+package com.resumeai.dto.authDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

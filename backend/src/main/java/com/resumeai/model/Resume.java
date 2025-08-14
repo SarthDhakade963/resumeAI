@@ -29,22 +29,43 @@ public class Resume extends Auditable {
     private User user;
 
     // One resume has many work experiences
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Resume can reference *specific* items from User's data
+    @ManyToMany
+    @JoinTable(
+            name = "resume_work_experience",
+            joinColumns = @JoinColumn(name = "resume_id"),
+            inverseJoinColumns = @JoinColumn(name = "work_experience_id")
+    )
     @Builder.Default
     private List<WorkExperience> workExperiences = new ArrayList<>();
 
     // One resume has many education entries
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
+    @JoinTable(
+            name = "resume_education",
+            joinColumns = @JoinColumn(name = "resume_id"),
+            inverseJoinColumns = @JoinColumn(name = "education_id")
+    )
     @Builder.Default
     private List<Education> educations = new ArrayList<>();
 
-    // One resume has many skills
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Many resume has many skills
+    @ManyToMany
+    @JoinTable(
+            name = "resume_skill",
+            joinColumns = @JoinColumn(name = "resume_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
     @Builder.Default
     private List<Skill> skills = new ArrayList<>();
 
-    // One resume has many projects
-    @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Many resume has many projects
+    @ManyToMany
+    @JoinTable(
+            name = "resume_project",
+            joinColumns = @JoinColumn(name = "resume_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
     @Builder.Default
     private List<Project> projects = new ArrayList<>();
 

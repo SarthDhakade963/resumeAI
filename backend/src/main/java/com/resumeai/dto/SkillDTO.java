@@ -3,17 +3,16 @@ package com.resumeai.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Data
-@RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class UserDTO {
+public class SkillDTO {
     private UUID id;
-    private String username;
-    private String email;
-    private String profilePicUrl; // URL
+    private String skillName;
+    private String proficiency;
 }

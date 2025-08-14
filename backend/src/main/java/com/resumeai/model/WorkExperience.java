@@ -35,7 +35,7 @@ public class WorkExperience extends Auditable {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "resume_id", nullable = false)
-    private Resume resume;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 }

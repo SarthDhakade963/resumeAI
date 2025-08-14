@@ -29,13 +29,34 @@ public class User extends Auditable {
 
     private String password; // nullable if oAuth only
 
-    // one user has many resume
-    @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Resume> resumes = new ArrayList<>();
+
 
     @Column(name = "is_profile_complete")
     private boolean isAuthProfileComplete = false;
 
     private String profilePicUrl;  // store image path instead of File
+
+    // --- Direct ownership ---
+    // one user has many resume
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Resume> resumes = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkExperience> workExperiences = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Skill> skills = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Education> educations = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projects = new ArrayList<>();
+
+
 }

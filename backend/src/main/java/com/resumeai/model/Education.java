@@ -38,7 +38,7 @@ public class Education extends Auditable {
 
     private String grade;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resume_id", nullable = false)
-    private Resume resume;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

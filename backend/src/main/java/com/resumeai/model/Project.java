@@ -30,6 +30,6 @@ public class Project {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "resume_id", nullable = false)
-    private Resume resume;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
