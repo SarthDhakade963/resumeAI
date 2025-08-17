@@ -1,9 +1,8 @@
 package com.resumeai.controller;
 
 import com.resumeai.dto.EducationDTO;
-import com.resumeai.mapper.EducationMapper;
-import com.resumeai.model.Education;
 import com.resumeai.service.EducationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +11,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/user/edu")
+@RequiredArgsConstructor
 public class EducationController {
-    private EducationService educationService;
+
+    private final EducationService educationService;
 
     @PostMapping
     public ResponseEntity<EducationDTO> addEducation(@RequestBody EducationDTO educationDTO) {

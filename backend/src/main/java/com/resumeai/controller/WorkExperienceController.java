@@ -16,7 +16,7 @@ import java.util.UUID;
 @RequestMapping("/user/work-exp")
 @RequiredArgsConstructor
 public class WorkExperienceController {
-    private WorkExperienceService workExperienceService;
+    private final WorkExperienceService workExperienceService;
 
     @PostMapping
     public ResponseEntity<WorkExperienceDTO> addWorkExperience(@RequestBody WorkExperienceDTO expDTO) {

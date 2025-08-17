@@ -58,8 +58,12 @@ public class WorkExperienceServiceImpl extends Signable implements WorkExperienc
 
     @Override
     public void deleteWorkExperience(UUID id) {
+        WorkExperience exp = workExperienceRepository.findById(id).orElseThrow(() -> new RuntimeException("Work Experience not found"));
 
+        if(!exp.getUser().equals(getLoggedInUser())) {
+            throw new RuntimeException("UnAuthorized");
+        }
+
+        workExperienceRepository.delete(exp);
     }
-
-
 }

@@ -2,9 +2,6 @@ package com.resumeai.controller;
 
 
 import com.resumeai.dto.ProjectDTO;
-import com.resumeai.dto.SkillDTO;
-import com.resumeai.mapper.ProjectMapper;
-import com.resumeai.model.Project;
 import com.resumeai.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

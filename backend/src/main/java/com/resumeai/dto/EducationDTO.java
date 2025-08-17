@@ -20,4 +20,5 @@ public class EducationDTO {
     private String grade;
     private LocalDate startDate;
     private LocalDate endDate;
+    private boolean currentlyStudying;
 }

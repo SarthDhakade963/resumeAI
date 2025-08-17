@@ -6,7 +6,7 @@ import com.resumeai.model.User;
 import java.util.List;
 
 public class ResumeMapper {
-    public static ResumeDTO toDTO(User user,
+    public static ResumeDTO toDTO(UserDTO user,
                                   List<SkillDTO> skills,
                                   List<ProjectDTO> projects,
                                   List<EducationDTO> educations,
@@ -14,9 +14,7 @@ public class ResumeMapper {
     )
     {
         return ResumeDTO.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .profilePicUrl(user.getProfilePicUrl())
+                .user(user)
                 .skills(skills)
                 .projects(projects)
                 .educations(educations)

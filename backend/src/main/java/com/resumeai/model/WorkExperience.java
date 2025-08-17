@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @AllArgsConstructor
@@ -25,14 +26,16 @@ public class WorkExperience extends Auditable {
     @Column(nullable = false)
     private String position;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Column(name = "start_date")
     private LocalDate startDate;
 
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    private boolean currentlyWorking;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

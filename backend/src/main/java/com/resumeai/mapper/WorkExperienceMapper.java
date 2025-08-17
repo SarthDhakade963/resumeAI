@@ -13,6 +13,7 @@ public class WorkExperienceMapper {
                 .description(exp.getDescription())
                 .startDate(exp.getStartDate())
                 .endDate(exp.getEndDate())
+                .currentlyWorking(exp.isCurrentlyWorking())
                 .build();
     }
 
@@ -23,6 +24,7 @@ public class WorkExperienceMapper {
                 .description(expDTO.getDescription())
                 .startDate(expDTO.getStartDate())
                 .endDate(expDTO.getEndDate())
+                .currentlyWorking(expDTO.isCurrentlyWorking())
                 .build();
     }
 

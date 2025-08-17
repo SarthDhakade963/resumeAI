@@ -19,4 +19,5 @@ public class WorkExperienceDTO {
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
+    private boolean currentlyWorking;
 }

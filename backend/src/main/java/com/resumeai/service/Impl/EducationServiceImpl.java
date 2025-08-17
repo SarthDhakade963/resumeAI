@@ -63,7 +63,7 @@ public class EducationServiceImpl extends Signable implements EducationService {
     public void deleteEducation(UUID id) {
         Education edu = educationRepository.findById(id).orElseThrow(() -> new RuntimeException("Education not found"));
 
-        if(edu.getUser().equals(getLoggedInUser())) {
+        if(!edu.getUser().equals(getLoggedInUser())) {
             throw new RuntimeException("User not found");
         }
 

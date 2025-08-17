@@ -135,6 +135,7 @@ public class AuthController {
             }
 
             UserDTO dto = new UserDTO(
+                    user.getId(),
                     user.getUsername(),
                     user.getEmail(),
                     imageUrl
