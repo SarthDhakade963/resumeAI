@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -19,10 +18,12 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     public FileStorageServiceImpl() throws IOException {
         // Save in user home directory (cross-platform)
-        this.uploadDir = Paths.get(System.getProperty("user.home"), "resumeai", "uploads", "profile-pics");
+        this.uploadDir = Paths.get(System.getProperty("user.home"), "resumai", "uploads", "profile-pics");
 
-        // Ensure directories exist
-        Files.createDirectories(uploadDir);
+        if(!Files.exists(uploadDir)) {
+            // Ensure directories exist
+            Files.createDirectories(uploadDir);
+        }
     }
 
     @Override
@@ -36,7 +37,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         // Target path
         Path targetPath = uploadDir.resolve(safeName).normalize();
 
-        // Save the file
+        // Save the file to path C:\Users\sarth\resumai\\uploads\profile-pics\
         file.transferTo(targetPath.toFile());
 
         // Return relative URL for serving
@@ -57,4 +58,6 @@ public class FileStorageServiceImpl implements FileStorageService {
         // Default fallback if no extension
         return ".png";
     }
+
+
 }

@@ -2,6 +2,7 @@ package com.resumeai.controller;
 
 
 import com.resumeai.dto.ProjectDTO;
+import com.resumeai.dto.SkillDTO;
 import com.resumeai.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,12 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping
-    public ResponseEntity<ProjectDTO> addProject(@RequestBody ProjectDTO projectDTO) {
-        return ResponseEntity.ok(projectService.addProject(projectDTO));
+    public ResponseEntity<String> addProject(@RequestBody List<ProjectDTO> projectDTO) {
+        // loop through skills and save them
+        for (ProjectDTO project : projectDTO) {
+            projectService.addProject(project);
+        }
+        return ResponseEntity.ok("Projects saved Successfully");
     }
 
     @GetMapping

@@ -17,8 +17,12 @@ public class SkillController {
     private final SkillService skillService;
 
     @PostMapping
-    public ResponseEntity<SkillDTO> addSkill(@RequestBody SkillDTO skillDTO) {
-        return ResponseEntity.ok(skillService.addSkill(skillDTO));
+    public ResponseEntity<String> addSkill(@RequestBody List<SkillDTO> skillDTO) {
+        // loop through skills and save them
+        for (SkillDTO skill : skillDTO) {
+            skillService.addSkill(skill);
+        }
+        return ResponseEntity.ok("Skills saved Successfully");
     }
 
     @GetMapping

@@ -5,23 +5,60 @@ import { Button } from "@/components/ui/button"; // or use <button> directly
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import AuthForm from "./AuthForm";
-import { usePathname, useRouter } from "next/navigation";
-import Loading from "./Loading";
+// import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
+import LoadingPage from "./LoadingPage";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function AuthButton() {
   const { data: session, status } = useSession();
   const [show, setShow] = useState(false);
+  const pathname = usePathname(); // current route
+  const [checking, setChecking] = useState(true);
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
-    if (status === "authenticated" && pathname !== "/check-profile") {
-      router.push("/check-profile");
-    }
-  }, [status, pathname, router]);
+    const redirectIfAuthenticated = async () => {
+      if (status !== "authenticated") {
+        setChecking(false);
+        return;
+      }
 
-  if (status === "loading") return <Loading />;
+      try {
+        // Only redirect if on /home
+        if (pathname === "/") {
+          // Fetch current user profile
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_SPRING_BASE_URL}/user/me`,
+            {
+              headers: {
+                Authorization: `Bearer ${session?.accessToken}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (!res.ok) throw new Error("Failed to fetch user");
+
+          const user = await res.json();
+
+          if (user.isAuthProfileComplete) {
+            router.push("/dashboard");
+          } else {
+            router.push("/user/profile");
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setChecking(false);
+      }
+    };
+
+    redirectIfAuthenticated();
+  }, [status, pathname, router, session]);
+
+  if (status === "loading" || checking) return <LoadingPage />; 
 
   if (session) {
     return (

@@ -1,6 +1,7 @@
 package com.resumeai.controller;
 
 import com.resumeai.dto.EducationDTO;
+import com.resumeai.dto.ProjectDTO;
 import com.resumeai.service.EducationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,12 @@ public class EducationController {
     private final EducationService educationService;
 
     @PostMapping
-    public ResponseEntity<EducationDTO> addEducation(@RequestBody EducationDTO educationDTO) {
-        return ResponseEntity.ok(educationService.addEducation(educationDTO));
+    public ResponseEntity<String> addEducation(@RequestBody List<EducationDTO> eduDTO) {
+        // loop through skills and save them
+        for (EducationDTO edu : eduDTO) {
+            educationService.addEducation(edu);
+        }
+        return ResponseEntity.ok("Education saved Successfully");
     }
 
     @GetMapping

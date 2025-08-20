@@ -15,5 +15,6 @@ public class UserDTO {
     private UUID id;
     private String username;
     private String email;
+    private boolean isProfileComplete;
     private String profilePicUrl; // URL
 }

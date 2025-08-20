@@ -25,9 +25,11 @@ declare module "next-auth/jwt" {
   }
 }
 
-interface User {
+export interface User {
   id?: string;
-  name: string | null;
+  isProfileComplete: boolean;
+  username: string | null;
   email: string | null;
+  profilePicUrl: string | null;
   accessToken?: string;
 }

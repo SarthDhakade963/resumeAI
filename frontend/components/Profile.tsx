@@ -91,7 +91,7 @@ const ProfileSetup = () => {
       }
 
       alert("Profile updated successfully!");
-      router.push("/dashboard");
+      router.push("/user/skills");
     } catch (err) {
       alert((err as Error).message);
     } finally {

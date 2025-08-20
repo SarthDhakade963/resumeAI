@@ -16,4 +16,6 @@ public interface UserService {
     public User createOAuthUser(String email, String name, String provider, String providerId);
 
     public Optional<User> validateCredentials(String email, String password);
+    
+
 }

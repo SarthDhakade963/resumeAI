@@ -1,9 +1,7 @@
 package com.resumeai.controller;
 
 import com.resumeai.dto.WorkExperienceDTO;
-import com.resumeai.mapper.EducationMapper;
-import com.resumeai.mapper.WorkExperienceMapper;
-import com.resumeai.model.WorkExperience;
+import com.resumeai.dto.WorkExperienceRequest;
 import com.resumeai.service.WorkExperienceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +17,20 @@ public class WorkExperienceController {
     private final WorkExperienceService workExperienceService;
 
     @PostMapping
-    public ResponseEntity<WorkExperienceDTO> addWorkExperience(@RequestBody WorkExperienceDTO expDTO) {
-        return ResponseEntity.ok(workExperienceService.addWorkExperience(expDTO));
+    public ResponseEntity<String> addWorkExperience(@RequestBody WorkExperienceRequest expReq) {
+        if (expReq.isFresher()) {
+            workExperienceService.markAsFresher();
+            return ResponseEntity.ok("Fresher profile saved");
+        }
+
+        expReq.getWorkExperiences()
+                .forEach(workExperienceService::addWorkExperience);
+
+        return ResponseEntity.ok("Work Experience saved");
     }
 
     @GetMapping
-    public ResponseEntity<List<WorkExperienceDTO>> getWorkExperiences(@RequestBody WorkExperienceDTO expDTO) {
+    public ResponseEntity<List<WorkExperienceDTO>> getWorkExperiences() {
         return ResponseEntity.ok(workExperienceService.getWorkExperience());
     }
 

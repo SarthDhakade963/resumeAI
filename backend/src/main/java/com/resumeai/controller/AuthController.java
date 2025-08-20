@@ -96,7 +96,7 @@ public class AuthController {
             User user = userOpt.get();
 
             // Check profile completion logic
-            boolean isProfileComplete = user.isAuthProfileComplete();
+            boolean isProfileComplete = user.isProfileCompleted();
 
             System.out.println();
 
@@ -138,6 +138,7 @@ public class AuthController {
                     user.getId(),
                     user.getUsername(),
                     user.getEmail(),
+                    user.isProfileCompleted(),
                     imageUrl
             );
 
@@ -148,7 +149,7 @@ public class AuthController {
     }
 
 
-    @PostMapping(value = "/profile-setup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProfile(
             @RequestParam("username") String username,
             @RequestParam(value = "profilePic", required = false) MultipartFile profilePic,
@@ -182,8 +183,6 @@ public class AuthController {
                 user.setProfilePicUrl(profilePicUrl);
             }
 
-            user.setAuthProfileComplete(true);
-
             System.out.println("Profile before saving : " + user);
 
             userService.save(user);
@@ -199,5 +198,4 @@ public class AuthController {
             return ResponseEntity.status(500).body("Server error: " + e.getMessage());
         }
     }
-
 }

@@ -4,7 +4,11 @@ import GitHubProvider from "next-auth/providers/github";
 import { NextAuthOptions } from "next-auth";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { User as NextAuthUser } from "next-auth";
+interface AuthUser {
+  id: string;
+  username: string;
+  email: string;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -29,7 +33,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(
         credentials
-      ): Promise<(NextAuthUser & { accessToken?: string }) | null> {
+      ): Promise<(AuthUser & { accessToken?: string }) | null> {
         if (!credentials?.email || !credentials.password) return null;
         try {
           const res = await fetch(
@@ -62,7 +66,8 @@ export const authOptions: NextAuthOptions = {
 
           // user must contain id, name and emai
           return {
-            id: user.id, // make sure it's a string
+            id: user.id,
+            username: user.username,
             email: user.email,
             accessToken: user.accessToken,
           };
@@ -148,10 +153,9 @@ export const authOptions: NextAuthOptions = {
     },
 
     async redirect({ url, baseUrl }) {
-      
       // If error is in URL, redirect to /home
       if (url.includes("error=OAuthCallback")) {
-        return `http:localhost:3000/home`;
+        return `http://localhost:3000/home`;
       }
       return baseUrl;
     },

@@ -2,6 +2,7 @@ package com.resumeai.model;
 
 import com.resumeai.model.superclass.Auditable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -29,12 +30,13 @@ public class User extends Auditable {
 
     private String password; // nullable if oAuth only
 
-
-
-    @Column(name = "is_profile_complete")
-    private boolean isAuthProfileComplete = false;
-
     private String profilePicUrl;  // store image path instead of File
+
+    @Column(nullable = false)
+    private boolean fresher = false;
+
+    @Column(name = "profile_completed", nullable = false)
+    private boolean profileCompleted = false;
 
     // --- Direct ownership ---
     // one user has many resume
@@ -57,6 +59,5 @@ public class User extends Auditable {
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> projects = new ArrayList<>();
-
 
 }

@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
                 .email(email)
                 .username(name != null ? name : email) // fallback
                 .password(null) // no password for OAuth
-                .isAuthProfileComplete(false)
+                .profileCompleted(false)
                 .build();
         return userRepository.save(user);
     }

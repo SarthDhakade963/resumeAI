@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @RequiredArgsConstructor
 public abstract class Signable {
-    private final UserRepository userRepository;
+    protected final UserRepository userRepository;
 
     protected User getLoggedInUser() {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

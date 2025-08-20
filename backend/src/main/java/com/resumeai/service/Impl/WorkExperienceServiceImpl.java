@@ -1,5 +1,6 @@
 package com.resumeai.service.Impl;
 
+
 import com.resumeai.dto.WorkExperienceDTO;
 import com.resumeai.mapper.WorkExperienceMapper;
 import com.resumeai.model.User;
@@ -8,7 +9,6 @@ import com.resumeai.repository.UserRepository;
 import com.resumeai.repository.WorkExperienceRepository;
 import com.resumeai.service.Signable;
 import com.resumeai.service.WorkExperienceService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,7 +44,6 @@ public class WorkExperienceServiceImpl extends Signable implements WorkExperienc
             throw new RuntimeException("UnAuthorized");
         }
 
-
         exp.setCompanyName(expDTO.getCompanyName());
         exp.setPosition(expDTO.getPosition());
         exp.setDescription(expDTO.getDescription());
@@ -52,7 +51,6 @@ public class WorkExperienceServiceImpl extends Signable implements WorkExperienc
         exp.setEndDate(expDTO.getEndDate());
 
         WorkExperience savedExp = workExperienceRepository.save(exp);
-
         return WorkExperienceMapper.toDTO(savedExp);
     }
 
@@ -65,5 +63,19 @@ public class WorkExperienceServiceImpl extends Signable implements WorkExperienc
         }
 
         workExperienceRepository.delete(exp);
+    }
+
+    @Override
+    public boolean markAsFresher() {
+        User user = getLoggedInUser();
+
+        if (Boolean.TRUE.equals(user.isFresher())) {
+            System.out.println("Already fresher");
+            return false; // already marked as fresher
+        }
+
+        user.setFresher(true);
+        userRepository.save(user);
+        return true;
     }
 }
