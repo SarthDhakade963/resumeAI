@@ -1,5 +1,6 @@
 package com.resumeai.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,8 +14,10 @@ import java.util.UUID;
 @Builder
 public class UserDTO {
     private UUID id;
+    private String fullName;
     private String username;
     private String email;
-    private boolean isProfileComplete;
+    private String summary;
+    private Boolean isProfileComplete;
     private String profilePicUrl; // URL
 }

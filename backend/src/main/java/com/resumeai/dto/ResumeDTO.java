@@ -15,6 +15,7 @@ import java.util.UUID;
 public class ResumeDTO {
     private UUID id;
     private UserDTO user;
+    private String enhancedResume;
     private List<SkillDTO> skills;
     private List<ProjectDTO> projects;
     private List<EducationDTO> educations;

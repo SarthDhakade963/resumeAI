@@ -10,9 +10,9 @@ import java.util.UUID;
 
 
 public interface UserProfileService {
-    public UserDTO getUserDTO(UUID id);
+    public UserDTO getUserDTO();
 
-    public UserDTO updateUser(UUID id, UserDTO dto);
+    public UserDTO updateUser(UserDTO dto);
 
     UserDTO currentUser();
 

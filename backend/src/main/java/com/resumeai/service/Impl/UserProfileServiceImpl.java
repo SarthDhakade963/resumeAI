@@ -28,14 +28,14 @@ public class UserProfileServiceImpl extends Signable implements UserProfileServi
     }
 
     @Override
-    public UserDTO getUserDTO(UUID id) {
+    public UserDTO getUserDTO() {
         User user = getLoggedInUser();
 
         return UserMapper.toDTO(user);
     }
 
     @Override
-    public UserDTO updateUser(UUID id, UserDTO dto) {
+    public UserDTO updateUser(UserDTO dto) {
         User user = getLoggedInUser();
 
         user.setUsername(dto.getUsername());
@@ -43,6 +43,10 @@ public class UserProfileServiceImpl extends Signable implements UserProfileServi
         user.setEmail(dto.getEmail());
 
         user.setProfilePicUrl(dto.getProfilePicUrl());
+
+        user.setFullName(dto.getFullName());
+
+        user.setSummary(dto.getSummary());
 
         User savedUser = userRepository.save(user);
 
@@ -54,8 +58,10 @@ public class UserProfileServiceImpl extends Signable implements UserProfileServi
         User user = getLoggedInUser();
 
         return UserDTO.builder()
+                .fullName(user.getFullName())
                 .email(user.getEmail())
                 .username(user.getUsername())
+                .summary(user.getSummary())
                 .isProfileComplete(user.isProfileCompleted())
                 .profilePicUrl(user.getProfilePicUrl())
                 .build();

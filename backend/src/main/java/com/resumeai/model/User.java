@@ -22,13 +22,21 @@ public class User extends Auditable {
     @GeneratedValue
     private UUID id;
 
+    private String fullName;
+
     @Column(unique = true)
     public String username;
+
+    private String summary;
 
     @Column(unique = true, nullable = false)
     public String email;
 
     private String password; // nullable if oAuth only
+
+    @Builder.Default
+    private Boolean isProfileComplete = false;
+
 
     private String profilePicUrl;  // store image path instead of File
 

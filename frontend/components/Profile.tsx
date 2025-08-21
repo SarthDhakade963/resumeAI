@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Upload, User, Camera, Check, ArrowRight } from "lucide-react";
+import { Upload, User, Camera, Check, ArrowRight, FileText } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -9,7 +9,9 @@ import { useSession } from "next-auth/react";
 const ProfileSetup = () => {
   const session = useSession();
 
+  const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
+  const [summary, setSummary] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -55,10 +57,17 @@ const ProfileSetup = () => {
   };
 
   async function submit() {
-    // Simulated API call - replace with your actual logic
-
-    if (!username) {
+    // Validation
+    if (!fullName.trim()) {
+      alert("Please enter your full name");
+      return;
+    }
+    if (!username.trim()) {
       alert("Please enter a username");
+      return;
+    }
+    if (!summary.trim()) {
+      alert("Please enter a profile summary");
       return;
     }
     if (!imageFile) {
@@ -68,10 +77,12 @@ const ProfileSetup = () => {
 
     setLoading(true);
 
-    console.log("Sending:", { username, imageFile });
+    console.log("Sending:", { fullName, username, summary, imageFile });
 
     const formData = new FormData();
+    formData.append("fullName", fullName);
     formData.append("username", username);
+    formData.append("summary", summary);
     if (imageFile) formData.append("profilePic", imageFile);
 
     try {
@@ -111,13 +122,13 @@ const ProfileSetup = () => {
             Complete Your Profile
           </h1>
           <p className="text-gray-600">
-            Add a photo and username to get started
+            Add your details to create your professional profile
           </p>
         </div>
 
         {/* Form Card */}
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-          <div className="p-8 space-y-8">
+          <div className="p-8 space-y-6">
             {/* Image Upload Section */}
             <div className="space-y-4">
               <label className="block text-md font-semibold text-gray-700 mb-3">
@@ -191,6 +202,26 @@ const ProfileSetup = () => {
               />
             </div>
 
+            {/* Full Name Section */}
+            <div className="space-y-3">
+              <label className="block text-md font-semibold text-gray-700">
+                Full Name
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  placeholder="Enter your full name"
+                  className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-gray-100 focus:border-gray-700 transition-all duration-200 text-gray-800 placeholder-gray-500"
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-4">
+                  <User className="w-5 h-5 text-gray-400" />
+                </div>
+              </div>
+            </div>
+
             {/* Username Section */}
             <div className="space-y-3">
               <label className="block text-md font-semibold text-gray-700">
@@ -206,9 +237,36 @@ const ProfileSetup = () => {
                   className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-gray-100 focus:border-gray-700 transition-all duration-200 text-gray-800 placeholder-gray-500"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                  <User className="w-5 h-5 text-gray-400" />
+                  <span className="text-gray-400 text-sm">@</span>
                 </div>
               </div>
+            </div>
+
+            {/* Summary Section */}
+            <div className="space-y-3">
+              <label className="block text-md font-semibold text-gray-700">
+                Professional Summary
+              </label>
+              <div className="relative">
+                <textarea
+                  value={summary}
+                  onChange={(e) => setSummary(e.target.value)}
+                  required
+                  placeholder="Write a brief summary about yourself, your skills, and experience..."
+                  rows={4}
+                  maxLength={500}
+                  className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-gray-100 focus:border-gray-700 transition-all duration-200 text-gray-800 placeholder-gray-500 resize-none"
+                />
+                <div className="absolute bottom-3 right-3 flex items-center space-x-2">
+                  <span className="text-xs text-gray-400">
+                    {summary.length}/500
+                  </span>
+                  <FileText className="w-4 h-4 text-gray-400" />
+                </div>
+              </div>
+              <p className="text-xs text-gray-500">
+                This will be displayed on your public profile
+              </p>
             </div>
 
             {/* Submit Button */}

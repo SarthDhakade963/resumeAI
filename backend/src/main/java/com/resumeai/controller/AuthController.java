@@ -136,6 +136,8 @@ public class AuthController {
 
             UserDTO dto = new UserDTO(
                     user.getId(),
+                    user.getFullName(),
+                    user.getSummary(),
                     user.getUsername(),
                     user.getEmail(),
                     user.isProfileCompleted(),
@@ -153,12 +155,16 @@ public class AuthController {
     public ResponseEntity<?> updateProfile(
             @RequestParam("username") String username,
             @RequestParam(value = "profilePic", required = false) MultipartFile profilePic,
+            @RequestParam("fullName") String fullName,
+            @RequestParam("summary") String summary,
             @RequestHeader("Authorization") String authHeader
     ) {
         try {
             System.out.println("Updating Profile...");
             System.out.println("Username: " + username);
             System.out.println("File: " + profilePic);
+            System.out.println("Full Name: " + fullName);
+            System.out.println("Summary: " + summary);
 
             String token = authHeader.substring(7);
             if (!jwtUtil.validToken(token)) {
@@ -175,6 +181,8 @@ public class AuthController {
 
             User user = userOpt.get();
 
+            user.setFullName(fullName);
+
             user.setUsername(username);
 
             if (profilePic != null && !profilePic.isEmpty()) {
@@ -183,6 +191,8 @@ public class AuthController {
                 user.setProfilePicUrl(profilePicUrl);
             }
 
+            user.setSummary(summary);
+
             System.out.println("Profile before saving : " + user);
 
             userService.save(user);
@@ -190,7 +200,9 @@ public class AuthController {
             return ResponseEntity.ok(Map.of(
                     "message", "Profile setup complete",
                     "username", user.getUsername(),
-                    "profilePicUrl", user.getProfilePicUrl()
+                    "profilePicUrl", user.getProfilePicUrl(),
+                    "full name", user.getFullName(),
+                    "summary" , user.getSummary()
             ));
 
         } catch (Exception e) {

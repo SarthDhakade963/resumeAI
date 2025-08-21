@@ -23,6 +23,8 @@ public class Resume extends Auditable {
 
     private String title;
 
+    private String enhancedResume;
+
     // Many resumes belong to one user
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

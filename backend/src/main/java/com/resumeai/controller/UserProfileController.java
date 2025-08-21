@@ -26,16 +26,16 @@ public class UserProfileController {
     private final JwtUtil jwtUtil;
 
     // Get profile by id
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserProfile(@PathVariable UUID id) {
-        UserDTO dto = userProfileService.getUserDTO(id); // service throws if not found
+    @GetMapping
+    public ResponseEntity<UserDTO> getUserProfile() {
+        UserDTO dto = userProfileService.getUserDTO(); // service throws if not found
         return ResponseEntity.ok(dto);
     }
 
     // Update Profile
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUserProfile(@PathVariable UUID id, @RequestBody UserDTO dto) {
-        UserDTO updated = userProfileService.updateUser(id, dto);
+    @PutMapping()
+    public ResponseEntity<UserDTO> updateUserProfile(@RequestBody UserDTO dto) {
+        UserDTO updated = userProfileService.updateUser(dto);
         return ResponseEntity.ok(updated);
     }
 
