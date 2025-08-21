@@ -19,6 +19,15 @@ const Dashboard = () => {
     console.log("Dashboard render - loading:", loading, "user:", user);
   }, [loading, user]);
 
+  const handleGenerateResume = () => {
+    // Add your resume generation logic here
+    console.log("Generating resume...");
+    // You could navigate to a resume generation page or trigger a modal
+    // router.push('/generate-resume');
+
+    
+  };
+
   if (loading) {
     return <LoadingPage />;
   }
@@ -91,6 +100,21 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Generate Resume Button - Prominent placement */}
+        <div className="mb-8 flex justify-center items-center">
+          <button
+            onClick={handleGenerateResume}
+            className="w-full  md:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
+          >
+            <div className="flex items-center justify-center gap-3">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Generate Resume
+            </div>
+          </button>
         </div>
 
         {/* Recent Activity */}

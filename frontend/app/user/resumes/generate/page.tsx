@@ -6,4 +6,4 @@ const ResumeGenerate = () => {
   )
 }
 
-export default ResumeGenerate
+export default ResumeGenerate;
