@@ -18,6 +18,7 @@ public class WorkExperienceController {
 
     @PostMapping
     public ResponseEntity<String> addWorkExperience(@RequestBody WorkExperienceRequest expReq) {
+        System.out.println("Request from the work experience form : " +expReq);
         if (expReq.isFresher()) {
             workExperienceService.markAsFresher();
             return ResponseEntity.ok("Fresher profile saved");
@@ -34,12 +35,12 @@ public class WorkExperienceController {
         return ResponseEntity.ok(workExperienceService.getWorkExperience());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<WorkExperienceDTO> updateWorkExperience(@PathVariable UUID id, @RequestBody WorkExperienceDTO expDTO) {
         return ResponseEntity.ok(workExperienceService.updateWorkExperience(id, expDTO));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     public ResponseEntity<Void> deleteWorkExperience(@PathVariable UUID id) {
         workExperienceService.deleteWorkExperience(id);
         return ResponseEntity.noContent().build();

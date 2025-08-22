@@ -28,6 +28,7 @@ public class Resume extends Auditable {
     // Many resumes belong to one user
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude
     private User user;
 
     // One resume has many work experiences

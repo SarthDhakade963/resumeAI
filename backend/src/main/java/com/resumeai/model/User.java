@@ -34,10 +34,6 @@ public class User extends Auditable {
 
     private String password; // nullable if oAuth only
 
-    @Builder.Default
-    private Boolean isProfileComplete = false;
-
-
     private String profilePicUrl;  // store image path instead of File
 
     @Column(nullable = false)
@@ -50,20 +46,25 @@ public class User extends Auditable {
     // one user has many resume
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<Resume> resumes = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<WorkExperience> workExperiences = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<Skill> skills = new ArrayList<>();
 
+    @ToString.Exclude
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Education> educations = new ArrayList<>();
 
+    @ToString.Exclude
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> projects = new ArrayList<>();

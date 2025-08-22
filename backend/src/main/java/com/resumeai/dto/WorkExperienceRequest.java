@@ -1,5 +1,6 @@
 package com.resumeai.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class WorkExperienceRequest {
+    @JsonProperty("isFresher")
     private boolean isFresher;
     private List<WorkExperienceDTO> workExperiences;
 }

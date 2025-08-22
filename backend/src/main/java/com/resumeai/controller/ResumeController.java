@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("user/resumes")
+@RequestMapping("/user/resumes")
 @RequiredArgsConstructor
 public class ResumeController {
     private final AIResumeService aiResumeService;
 
     @GetMapping
     public ResponseEntity<ResumeDTO> getResume() {
-        return ResponseEntity.ok(aiResumeService.getResumeData());
+        return ResponseEntity.ok(aiResumeService.enhanceResume());
     }
 
     @GetMapping("/generate")

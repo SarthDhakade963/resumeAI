@@ -28,6 +28,8 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
     public ResumeDTO enhanceResume() {
         ResumeDTO resumeData = getResumeData();
 
+        System.out.println("RESUME DATA :" + resumeData);
+
         String prompt = String.format(
                 "I will provide you structured resume details in the following format:\n" +
                         "Name: %s\n" +
@@ -72,10 +74,12 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
                 resumeData.getWorkExperiences().toString()
         );
 
+        System.out.println("Prompt : "+ prompt);
+
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .model("gpt-4o-mini") // lightweight + good quality
                 .messages(List.of(new ChatMessage("user", prompt)))
-                .maxTokens(1000)
+                .maxTokens(500)
                 .build();
 
         String aiOutput = openAiService.createChatCompletion(request)
@@ -83,6 +87,8 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
                 .getFirst()
                 .getMessage()
                 .getContent();
+
+        System.out.println("AI OUTPUT: " + aiOutput);
 
         ResumeDTO resumeDTO = new ResumeDTO();
 
@@ -99,7 +105,10 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
     @Override
     public byte[] generateResume() {
         ResumeDTO enhancedResume = enhanceResume();
+
         String html = enhancedResume.getEnhancedResume();
+
+        System.out.println("HTML : " + html);
 
         try {
             String puppeteerUrl = "http://localhost:3001/generate-pdf";

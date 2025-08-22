@@ -10,6 +10,7 @@ import com.resumeai.repository.WorkExperienceRepository;
 import com.resumeai.service.Signable;
 import com.resumeai.service.WorkExperienceService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -65,11 +66,12 @@ public class WorkExperienceServiceImpl extends Signable implements WorkExperienc
         workExperienceRepository.delete(exp);
     }
 
+    @Transactional
     @Override
     public boolean markAsFresher() {
         User user = getLoggedInUser();
 
-        if (Boolean.TRUE.equals(user.isFresher())) {
+        if (user.isFresher()) {
             System.out.println("Already fresher");
             return false; // already marked as fresher
         }

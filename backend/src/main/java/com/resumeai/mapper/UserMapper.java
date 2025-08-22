@@ -21,7 +21,8 @@ public class UserMapper {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .profilePicUrl(user.getProfilePicUrl())
+                .fullName(user.getFullName())
+                .summary(user.getSummary())
                 .build();
     }
-
 }

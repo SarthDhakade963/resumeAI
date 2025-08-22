@@ -501,11 +501,13 @@ export default function SkillsForm() {
                     <div className="flex items-center space-x-4">
                       <div className="p-3 rounded-lg bg-gray-50">
                         {(() => {
-          const option = proficiencyOptions.find(opt => opt.value === skill.proficiency);
-          const Icon = option?.icon || Target;
-          const color = option?.color || "text-gray-500";
-          return <Icon className={`w-5 h-5 ${color}`} />;
-        })()}
+                          const option = proficiencyOptions.find(
+                            (opt) => opt.value === skill.proficiency
+                          );
+                          const Icon = option?.icon || Target;
+                          const color = option?.color || "text-gray-500";
+                          return <Icon className={`w-5 h-5 ${color}`} />;
+                        })()}
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between items-center">
@@ -576,12 +578,7 @@ export default function SkillsForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {proficiencyOptions.map((option) => (
               <div key={option.value} className="flex items-start space-x-3">
-                <div
-                  className={`p-2 rounded-lg ${option.color.replace(
-                    "text-",
-                    "bg-"
-                  )} bg-opacity-10`}
-                >
+                <div className={`p-2 rounded-lg bg-opacity-100`}>
                   <option.icon className={`w-5 h-5 ${option.color}`} />
                 </div>
                 <div>

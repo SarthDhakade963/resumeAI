@@ -58,6 +58,7 @@ export default function WorkExperienceForm() {
   }>({});
 
   const suggestionRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+
   const router = useRouter();
 
   const [isFresher, setIsFresher] = useState(false);
@@ -359,6 +360,7 @@ export default function WorkExperienceForm() {
       return;
     }
 
+
     try {
       const payload: WorkExperiencePayload = {
         isFresher,
@@ -382,19 +384,19 @@ export default function WorkExperienceForm() {
               })),
       };
 
+      console.log("Payload sent:", payload);
+
       const res = await fetchWithToken("/user/work-exp", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to save work experience");
-      }
+      console.log("Response to the payload", res.text());
 
+      if (!res.ok) {
+        await res.text().catch(() => ({}));
+        throw new Error("Failed to save work experience");
+      }
       // Set success state and redirect
       setSuccess(true);
 
@@ -402,10 +404,8 @@ export default function WorkExperienceForm() {
       console.log("Submission successful, redirecting...");
 
       // Redirect after 1.5 seconds
-      setTimeout(() => {
-        console.log("Executing redirect...");
-        router.push("/dashboard");
-      }, 1500);
+      console.log("Executing redirect...");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Submission error:", error);
       setErrors({

@@ -44,6 +44,8 @@ public class ResumeServiceImpl extends Signable implements ResumeService {
     public ResumeDTO getResumeData() {
         User user = getLoggedInUser();
 
+        System.out.println("Logged user info " + user);
+
         return ResumeDTO.builder()
                 .user(UserMapper.toDTO(user))
                 .skills(skillRepository.findByUser(user).stream().map(SkillMapper::toDTO).toList())
@@ -57,6 +59,8 @@ public class ResumeServiceImpl extends Signable implements ResumeService {
     public byte[] generateResume() {
         // 1. Convert resume data into HTML (using Thymeleaf/Freemarker or manually build)
         String html = buildResumeHtml(getResumeData());
+
+        System.out.println(html);
 
         // 2. Send HTML to Puppeteer service
         String puppeteerUrl = "http://localhost:3001/generate-pdf";

@@ -62,7 +62,7 @@ public class UserProfileServiceImpl extends Signable implements UserProfileServi
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .summary(user.getSummary())
-                .isProfileComplete(user.isProfileCompleted())
+                .profileCompleted(user.isProfileCompleted())
                 .profilePicUrl(user.getProfilePicUrl())
                 .build();
     }

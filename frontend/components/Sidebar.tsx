@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import ProfilePic from "@/components/ProfilePic";
+import { useEffect, useState } from "react";
+import { fetchWithToken } from "@/lib/fetchWithToken";
 
 const pages = [
   { path: "/user/profile", label: "Profile", icon: User },
@@ -41,12 +43,27 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const session = useSession();
   const pathname = usePathname();
   const isDashboard = pathname.startsWith("/dashboard");
-
   // Find current page index for profile flow
   const currentPageIndex = pages.findIndex((p) => p.path === pathname);
   const totalPages = pages.length;
   const progress =
     currentPageIndex >= 0 ? ((currentPageIndex + 1) / totalPages) * 100 : 0;
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const res = await fetchWithToken("/user/me");
+
+      if (!res.ok) {
+        console.log("Error fetching username");
+      }
+      const user = await res.json();
+
+      setUsername(user.username);
+    };
+
+    fetchUsername();
+  }, [session]);
 
   const sidebarWidth = isOpen ? "w-72" : "w-20";
 
@@ -88,9 +105,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                 isDashboard ? "text-gray-100" : "text-gray-800"
               }`}
             >
-              {isDashboard
-                ? "Dashboard"
-                : session.data?.user?.name || "Username"}
+              {isDashboard ? "Dashboard" : `${username}` || "Username"}
             </h1>
             <p
               className={`text-xs ${
@@ -114,7 +129,9 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               <li key={item.path}>
                 <Link
                   href={item.path}
-                  className={`flex items-center ${isOpen ? 'space-x-3' : 'justify-center'} p-3 rounded-xl transition-all duration-200 group
+                  className={`flex items-center ${
+                    isOpen ? "space-x-3" : "justify-center"
+                  } p-3 rounded-xl transition-all duration-200 group
                   ${
                     isActive
                       ? isDashboard
@@ -127,13 +144,15 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                 >
                   {isOpen ? (
                     <>
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors flex-shrink-0 ${
-                        isDashboard
-                          ? isActive
-                            ? "bg-gray-600"
-                            : "bg-gray-700/50 group-hover:bg-gray-600"
-                          : "bg-gray-200 group-hover:bg-gray-300"
-                      }`}>
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors flex-shrink-0 ${
+                          isDashboard
+                            ? isActive
+                              ? "bg-gray-600"
+                              : "bg-gray-700/50 group-hover:bg-gray-600"
+                            : "bg-gray-200 group-hover:bg-gray-300"
+                        }`}
+                      >
                         <Icon
                           className={`w-4 h-4 ${
                             isDashboard
@@ -155,15 +174,17 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                       </span>
                     </>
                   ) : (
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                      isActive
-                        ? isDashboard
-                          ? "bg-gray-700/50"
-                          : "bg-white shadow-md border border-gray-200"
-                        : isDashboard
-                        ? "group-hover:bg-gray-700/40"
-                        : "group-hover:bg-gray-50"
-                    }`}>
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                        isActive
+                          ? isDashboard
+                            ? "bg-gray-700/50"
+                            : "bg-white shadow-md border border-gray-200"
+                          : isDashboard
+                          ? "group-hover:bg-gray-700/40"
+                          : "group-hover:bg-gray-50"
+                      }`}
+                    >
                       <Icon
                         className={`w-5 h-5 ${
                           isDashboard

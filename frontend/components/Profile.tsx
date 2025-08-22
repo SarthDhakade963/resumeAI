@@ -87,7 +87,7 @@ const ProfileSetup = () => {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SPRING_BASE_URL}/auth/profile-setup`,
+        `${process.env.NEXT_PUBLIC_SPRING_BASE_URL}/auth/profile`,
         {
           method: "POST",
           headers: {
