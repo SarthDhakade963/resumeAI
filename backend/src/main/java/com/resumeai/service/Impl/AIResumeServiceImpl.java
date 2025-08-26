@@ -1,135 +1,97 @@
 package com.resumeai.service.Impl;
 
+import com.resumeai.dto.Resume;
 import com.resumeai.dto.ResumeDTO;
 import com.resumeai.repository.*;
 import com.resumeai.service.AIResumeService;
-import com.theokanning.openai.completion.chat.ChatCompletionRequest;
-import com.theokanning.openai.completion.chat.ChatMessage;
-import com.theokanning.openai.service.OpenAiService;
-import org.springframework.http.*;
+import com.resumeai.service.OllamaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.thymeleaf.context.Context;
 
 @Service
 public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeService {
-    private final OpenAiService openAiService;
 
-    public AIResumeServiceImpl(UserRepository userRepository, SkillRepository skillRepository, ProjectRepository projectRepository, EducationRepository educationRepository, WorkExperienceRepository workExperienceRepository, TemplateEngine templateEngine, OpenAiService openAiService) {
-        super(userRepository, skillRepository, projectRepository, educationRepository, workExperienceRepository, templateEngine);
-        this.openAiService = openAiService;
+    private static final Logger log = LoggerFactory.getLogger(AIResumeServiceImpl.class);
+    private final OllamaService ollamaService;
+    private final TemplateEngine stringTemplateEngine;
+
+    public AIResumeServiceImpl(UserRepository userRepository,
+                               SkillRepository skillRepository,
+                               ProjectRepository projectRepository,
+                               EducationRepository educationRepository,
+                               WorkExperienceRepository workExperienceRepository,
+                               TemplateEngine stringTemplateEngine,
+                               OllamaService ollamaService) {
+        super(userRepository, skillRepository, projectRepository, educationRepository, workExperienceRepository, stringTemplateEngine);
+        this.ollamaService = ollamaService;
+        this.stringTemplateEngine = stringTemplateEngine;
     }
 
+    // ----------------------------
+    // Section-by-section enhancement
+    // ----------------------------
     @Override
-    public ResumeDTO enhanceResume() {
+    public Resume enhanceResume() {
         ResumeDTO resumeData = getResumeData();
 
-        System.out.println("RESUME DATA :" + resumeData);
+        Resume resume = new Resume();
+        resume.setName(resumeData.getUser().getFullName());
+        resume.setEmail(resumeData.getUser().getEmail());
+        // Generate each section individually
+        resume.setSummary(refineSection("summary", resumeData.getUser().getSummary()));
+        resume.setSkills(refineSection("skills", resumeData.getSkills()));
+        resume.setProjects(refineSection("projects", resumeData.getProjects()));
+        resume.setEducation(refineSection("education", resumeData.getEducations()));
+        resume.setWorkExperience(refineSection("work experience", resumeData.getWorkExperiences()));
 
-        String prompt = String.format(
-                "I will provide you structured resume details in the following format:\n" +
-                        "Name: %s\n" +
-                        "Email: %s\n" +
-                        "Skills: %s\n" +
-                        "Projects: %s\n" +
-                        "Education: %s\n" +
-                        "Work Experience: %s\n\n" +
+        System.out.println(resume);
+        System.out.println("-----");
 
-                        "TASK: Transform this data into a professional, modern, recruiter-friendly resume and OUTPUT IT AS A THYMELEAF HTML TEMPLATE.\n\n" +
+        return resume;
+    }
 
-                        "STRICT OUTPUT REQUIREMENTS (Thymeleaf):\n" +
-                        "- Return VALID HTML5 with a single <html> document; include <head> and <body>.\n" +
-                        "- Use Thymeleaf attributes only (th:text, th:each, th:if, th:href, th:classappend, etc.).\n" +
-                        "- Assume the Spring model provides an attribute 'profile' with fields:\n" +
-                        "  user.fullName (String), user.email (String),\n" +
-                        "  user.summary (String),\n" +
-                        "  user.skills (List<String>),\n" +
-                        "  user.projects (List<Project>{ name, link (optional), description }),\n" +
-                        "  user.education (List<Edu>{ degree, fieldOfStudy, institution, startDate, endDate, gpa (optional)}),\n" +
-                        "  user.experience (List<Exp>{ title, company, location, startDate, endDateOrPresent }).\n" +
-                        "- Bind all dynamic values using 'th:text' or 'th:each'. Do NOT hardcode the provided values—use the model fields above.\n" +
-                        "- Include sections in this order: Header (name/email), Summary, Skills, Projects, Education, Experience.\n" +
-                        "- In Projects/Education/Experience, iterate with th:each and render bullet points via <ul><li th:each>.\n" +
-                        "- For optional fields (links, GPA, tech tags), wrap in th:if so they only render when present.\n" +
-                        "- Keep classes semantic and minimal; no external CSS/JS (inline <style> allowed).\n\n" +
+    // Refine one section using Ollama phi3:mini
+    private String refineSection(String sectionName, Object rawContent) {
+        if (rawContent == null) return "";
 
-                        "WRITING & CONTENT RULES:\n" +
-                        "- Use impactful, concise language with strong action verbs and measurable outcomes (e.g., \"Improved throughput by 25%%\").\n" +
-                        "- Optimize for ATS: naturally include relevant keywords from skills/projects/experience.\n" +
-                        "- Prefer results/impact over responsibilities; avoid redundancy.\n\n" +
+        try {
+            String prompt = String.format("""
+                Refine the following %s for a resume. 
+                Keep it concise, professional, and readable.
+                
+                Content:
+                %s
+                """, sectionName, rawContent);
 
-                        "FINAL OUTPUT FORMAT:\n" +
-                        "- Deliver ONLY the Thymeleaf HTML (no markdown fences, no extra commentary).\n" +
-                        "- Ensure it is copy-paste ready into a Thymeleaf template file.\n",
-                resumeData.getUser().getFullName(),
-                resumeData.getUser().getEmail(),
-                resumeData.getUser().getSummary(),
-                resumeData.getSkills().toString(),
-                resumeData.getProjects().toString(),
-                resumeData.getEducations().toString(),
-                resumeData.getWorkExperiences().toString()
-        );
+            String refined = ollamaService.generateText(prompt);
 
-        System.out.println("Prompt : "+ prompt);
+            // fallback in case model returns empty
+            return (refined == null || refined.isBlank()) ? rawContent.toString() : refined;
 
-        ChatCompletionRequest request = ChatCompletionRequest.builder()
-                .model("gpt-4o-mini") // lightweight + good quality
-                .messages(List.of(new ChatMessage("user", prompt)))
-                .maxTokens(500)
-                .build();
+        } catch (Exception e) {
+            log.warn("Failed to refine {}: {}", sectionName, e.getMessage());
+            return rawContent.toString();
+        }
+    }
 
-        String aiOutput = openAiService.createChatCompletion(request)
-                .getChoices()
-                .getFirst()
-                .getMessage()
-                .getContent();
+    // ----------------------------
+    // Resume rendering
+    // ----------------------------
+    @Override
+    public String renderResume() {
+        Resume resume = enhanceResume();
 
-        System.out.println("AI OUTPUT: " + aiOutput);
+        Context context = new Context();
+        context.setVariable("resume", resume);
 
-        ResumeDTO resumeDTO = new ResumeDTO();
-
-        resumeDTO.setEnhancedResume(aiOutput);
-
-        return resumeDTO;
+        return stringTemplateEngine.process("resume", context);
     }
 
     @Override
     public ResumeDTO getResumeData() {
         return super.getResumeData();
-    }
-
-    @Override
-    public byte[] generateResume() {
-        ResumeDTO enhancedResume = enhanceResume();
-
-        String html = enhancedResume.getEnhancedResume();
-
-        System.out.println("HTML : " + html);
-
-        try {
-            String puppeteerUrl = "http://localhost:3001/generate-pdf";
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            Map<String, String> body = new HashMap<>();
-            body.put("html", html);
-
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<byte[]> response = restTemplate.exchange(
-                    puppeteerUrl,
-                    HttpMethod.POST,
-                    new HttpEntity<>(body, headers),
-                    byte[].class
-            );
-
-            return response.getBody();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to generate PDF via Puppeteer", e);
-        }
     }
 }

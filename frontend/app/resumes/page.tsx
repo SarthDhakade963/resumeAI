@@ -5,25 +5,26 @@ import LoadingPage from "@/components/LoadingPage";
 import { fetchWithToken } from "@/lib/fetchWithToken";
 import { useEffect, useState } from "react";
 
-interface ResumeDTO {
-  enhancedResume: string;
-}
-
 export default function ResumePage() {
   const [resume, setResume] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    console.log("Resume data updated:", resume);
+  }, [resume]);
+
+  useEffect(() => {
     const fetchResume = async () => {
       try {
         const res = await fetchWithToken("/user/resumes", { method: "GET" });
         if (!res.ok) throw new Error("Failed to fetch resume");
-        const data: ResumeDTO = await res.json();
-        setResume(data.enhancedResume);
+        const data: string = await res.text();
+        console.log(data);
 
+        setResume(data);
         console.log("Resume data : ", resume);
-      } catch (error) {
+      } catch (error: unknown) {
         console.log(error);
         return <Loading />;
       } finally {
