@@ -40,7 +40,6 @@ public class ResumeServiceImpl extends Signable implements ResumeService {
         this.templateEngine = templateEngine;
     }
 
-    @Override
     public ResumeDTO getResumeData() {
         User user = getLoggedInUser();
 

@@ -19,7 +19,7 @@ public class ResumeDownloadController {
 
     @GetMapping("/generate")
     public ResponseEntity<byte[]> generateResume() {
-        byte[] pdf = aiResumeService.generateResume();
+        byte[] pdf = aiResumeService.generatePDF();
 
           return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=resume.pdf")

@@ -6,4 +6,6 @@ public interface AIResumeService extends ResumeService{
     Resume enhanceResume();
 
     String renderResume();
+
+    public byte[] generatePDF();
 }

@@ -7,9 +7,14 @@ import com.resumeai.service.AIResumeService;
 import com.resumeai.service.OllamaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeService {
@@ -17,6 +22,10 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
     private static final Logger log = LoggerFactory.getLogger(AIResumeServiceImpl.class);
     private final OllamaService ollamaService;
     private final TemplateEngine stringTemplateEngine;
+    private final RestTemplate restTemplate;
+
+    // Cache the enhanced resume after first generation
+    private Resume enhancedResumeCache = null;
 
     public AIResumeServiceImpl(UserRepository userRepository,
                                SkillRepository skillRepository,
@@ -24,10 +33,11 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
                                EducationRepository educationRepository,
                                WorkExperienceRepository workExperienceRepository,
                                TemplateEngine stringTemplateEngine,
-                               OllamaService ollamaService) {
+                               OllamaService ollamaService, RestTemplate restTemplate) {
         super(userRepository, skillRepository, projectRepository, educationRepository, workExperienceRepository, stringTemplateEngine);
         this.ollamaService = ollamaService;
         this.stringTemplateEngine = stringTemplateEngine;
+        this.restTemplate = restTemplate;
     }
 
     // ----------------------------
@@ -59,17 +69,25 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
 
         try {
             String prompt = String.format("""
-                Refine the following %s for a resume. 
-                Keep it concise, professional, and readable.
-                
+                Refine the following %s into crisp, relevant résumé content.
+
+                Rules:
+                    - Output strictly in HTML list format (<ul><li>...</li></ul>).
+                    - Include max 2–3 bullet points per section.
+                    - Each <li> must be ≤ 15 words.
+                    - Only include technical or career-relevant details.
+                    - Exclude unrelated professions, education mismatch, or filler content.
+                    - Do not include explanations, comments, or word counts.
+                    - Return only the HTML, nothing else.
+
                 Content:
                 %s
-                """, sectionName, rawContent);
+            """, sectionName, rawContent);
 
-            String refined = ollamaService.generateText(prompt);
+            String refined = ollamaService.generateText(prompt).replaceAll("```[a-zA-Z]*", "").replaceAll("```", "").replaceAll("end of li>", "");
 
             // fallback in case model returns empty
-            return (refined == null || refined.isBlank()) ? rawContent.toString() : refined;
+            return refined.isBlank() ? rawContent.toString() : refined;
 
         } catch (Exception e) {
             log.warn("Failed to refine {}: {}", sectionName, e.getMessage());
@@ -94,4 +112,33 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
     public ResumeDTO getResumeData() {
         return super.getResumeData();
     }
+
+    public byte[] generatePDF() {
+        // 1. Generate resume HTML using Thymeleaf
+        String html = renderResume();
+
+        log.info("Generated HTML for PDF: {}", html.substring(0, Math.min(200, html.length())));
+
+        // 2. Send HTML to Puppeteer microservice
+        String puppeteerUrl = "http://localhost:3001/generate-pdf";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, String> body = new HashMap<>();
+        body.put("html", html);
+
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<byte[]> response = restTemplate.exchange(
+                puppeteerUrl,
+                HttpMethod.POST,
+                requestEntity,
+                byte[].class
+        );
+
+        return response.getBody();
+    }
+
+
 }
