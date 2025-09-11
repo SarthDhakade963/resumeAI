@@ -1,0 +1,55 @@
+# ===== Database (PostgreSQL) Configuration =====
+spring.datasource.url=jdbc:postgresql://localhost:5432/resumAI
+spring.datasource.username=your-postgresdb-username
+spring.datasource.password=your-postgresdb-password
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# ===== OAuth Client Configuration =====
+# Google OAuth
+spring.security.oauth2.client.registration.google.client-id=your-google-client-id
+spring.security.oauth2.client.registration.google.client-secret=your-google-client-secret
+spring.security.oauth2.client.registration.google.redirect-uri=your-google-redirect-uri
+spring.security.oauth2.client.registration.google.scope=openid,email,profile
+spring.security.oauth2.client.registration.google.authorization-grant-type=authorization_code
+
+# GitHub OAuth
+spring.security.oauth2.client.registration.github.client-id=your-github-client-id
+spring.security.oauth2.client.registration.github.client-secret=your-github-client-secret
+spring.security.oauth2.client.registration.github.redirect-uri=your-github-redirect-uri
+spring.security.oauth2.client.registration.github.scope=user:email
+spring.security.oauth2.client.registration.github.authorization-grant-type=authorization_code
+
+# LinkedIn OAuth
+spring.security.oauth2.client.registration.linkedin.client-id=your-linkedin-client-id
+spring.security.oauth2.client.registration.linkedin.client-secret=your-linkedin-client-secret
+spring.security.oauth2.client.registration.linkedin.redirect-uri=your-linkedin-client-secret
+spring.security.oauth2.client.registration.linkedin.scope=r_liteprofile,r_emailaddress
+spring.security.oauth2.client.registration.linkedin.authorization-grant-type=authorization_code
+
+spring.security.oauth2.client.provider.linkedin.authorization-uri=your-linkedin-client-id
+spring.security.oauth2.client.provider.linkedin.token-uri=your-linkedin-client-id
+spring.security.oauth2.client.provider.linkedin.user-info-uri=your-linkedin-client-id
+spring.security.oauth2.client.provider.linkedin.user-name-attribute=id
+
+# ===== Frontend URL (for CORS or redirect purposes) =====
+frontend.url=your-frontend-url
+
+base.url=your-backend-url
+
+# ===== NextAuth Secret =====
+next.auth.secret= your-next-auth-secret
+
+# ===== JWT Config (if used) =====
+jwt.secret=YOUR-JWT-SECRET
+jwt.expiration=3600000  # e.g., 1 hour in milliseconds
+
+spring.devtools.restart.enabled=false
+
+# ==== Open AI Key ====
+openai.api.key=your-openai-api-key
+
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.cache=false
