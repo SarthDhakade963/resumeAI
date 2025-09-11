@@ -1,20 +1,29 @@
 package com.resumeai.service.Impl;
 
-import com.resumeai.dto.Resume;
-import com.resumeai.dto.ResumeDTO;
-import com.resumeai.repository.*;
-import com.resumeai.service.AIResumeService;
-import com.resumeai.service.OllamaService;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.resumeai.dto.Resume;
+import com.resumeai.dto.ResumeDTO;
+import com.resumeai.repository.EducationRepository;
+import com.resumeai.repository.ProjectRepository;
+import com.resumeai.repository.SkillRepository;
+import com.resumeai.repository.UserRepository;
+import com.resumeai.repository.WorkExperienceRepository;
+import com.resumeai.service.AIResumeService;
+import com.resumeai.service.OllamaService;
 
 @Service
 public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeService {
@@ -57,7 +66,6 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
         resume.setEducation(refineSection("education", resumeData.getEducations()));
         resume.setWorkExperience(refineSection("work experience", resumeData.getWorkExperiences()));
 
-        System.out.println(resume);
         System.out.println("-----");
 
         return resume;

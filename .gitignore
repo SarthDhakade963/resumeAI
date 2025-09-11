@@ -74,3 +74,5 @@ application.properties
 application.yml
 
 backend/src/main/resources/application.properties
+
+./backend/.env
