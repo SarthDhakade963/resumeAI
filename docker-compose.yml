@@ -9,7 +9,7 @@ services:
       - "3000:3000"
     environment:
       - NEXTAUTH_URL=http://localhost:3000
-      - NEXT_PUBLIC_SPRING_BASE_URL=http://localhost:8080
+      - NEXT_PUBLIC_SPRING_BASE_URL=http://backend:8080
     extra_hosts:
       - "localhost:host-gateway"
     depends_on:
@@ -23,8 +23,6 @@ services:
       - "8080:8080"
     env_file:
       - ./backend/.env.local
-    extra_hosts:
-      - "localhost:host-gateway"
     depends_on:
       - db
       - puppeteer
@@ -48,8 +46,6 @@ services:
     build:
       context: ./backend/pdf-service
       dockerfile: Dockerfile
-    extra_hosts:
-      - "localhost:host-gateway"
     ports:
       - "3001:3001"
     restart: unless-stopped
