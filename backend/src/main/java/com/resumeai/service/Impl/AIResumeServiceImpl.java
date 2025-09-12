@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -33,17 +34,21 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
     private final TemplateEngine stringTemplateEngine;
     private final RestTemplate restTemplate;
 
+    @Value("${PUPPETEER_BASE_URL}")
+    private String puppeteerUrl;
+
     // Cache the enhanced resume after first generation
     private Resume enhancedResumeCache = null;
 
     public AIResumeServiceImpl(UserRepository userRepository,
-                               SkillRepository skillRepository,
-                               ProjectRepository projectRepository,
-                               EducationRepository educationRepository,
-                               WorkExperienceRepository workExperienceRepository,
-                               TemplateEngine stringTemplateEngine,
-                               OllamaService ollamaService, RestTemplate restTemplate) {
-        super(userRepository, skillRepository, projectRepository, educationRepository, workExperienceRepository, stringTemplateEngine);
+            SkillRepository skillRepository,
+            ProjectRepository projectRepository,
+            EducationRepository educationRepository,
+            WorkExperienceRepository workExperienceRepository,
+            TemplateEngine stringTemplateEngine,
+            OllamaService ollamaService, RestTemplate restTemplate) {
+        super(userRepository, skillRepository, projectRepository, educationRepository, workExperienceRepository,
+                stringTemplateEngine);
         this.ollamaService = ollamaService;
         this.stringTemplateEngine = stringTemplateEngine;
         this.restTemplate = restTemplate;
@@ -73,26 +78,28 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
 
     // Refine one section using Ollama phi3:mini
     private String refineSection(String sectionName, Object rawContent) {
-        if (rawContent == null) return "";
+        if (rawContent == null)
+            return "";
 
         try {
             String prompt = String.format("""
-                Refine the following %s into crisp, relevant résumé content.
+                        Refine the following %s into crisp, relevant résumé content.
 
-                Rules:
-                    - Output strictly in HTML list format (<ul><li>...</li></ul>).
-                    - Include max 2–3 bullet points per section.
-                    - Each <li> must be ≤ 15 words.
-                    - Only include technical or career-relevant details.
-                    - Exclude unrelated professions, education mismatch, or filler content.
-                    - Do not include explanations, comments, or word counts.
-                    - Return only the HTML, nothing else.
+                        Rules:
+                            - Output strictly in HTML list format (<ul><li>...</li></ul>).
+                            - Include max 2–3 bullet points per section.
+                            - Each <li> must be ≤ 15 words.
+                            - Only include technical or career-relevant details.
+                            - Exclude unrelated professions, education mismatch, or filler content.
+                            - Do not include explanations, comments, or word counts.
+                            - Return only the HTML, nothing else.
 
-                Content:
-                %s
-            """, sectionName, rawContent);
+                        Content:
+                        %s
+                    """, sectionName, rawContent);
 
-            String refined = ollamaService.generateText(prompt).replaceAll("```[a-zA-Z]*", "").replaceAll("```", "").replaceAll("end of li>", "");
+            String refined = ollamaService.generateText(prompt).replaceAll("```[a-zA-Z]*", "").replaceAll("```", "")
+                    .replaceAll("end of li>", "").replaceAll("endlist>", "").replaceAll("endblock>", "");
 
             // fallback in case model returns empty
             return refined.isBlank() ? rawContent.toString() : refined;
@@ -108,10 +115,17 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
     // ----------------------------
     @Override
     public String renderResume() {
-        Resume resume = enhanceResume();
+        Resume resumeToRender;
+
+        if (enhancedResumeCache != null) {
+            resumeToRender = enhancedResumeCache;
+        } else {
+            resumeToRender = enhanceResume();
+            enhancedResumeCache = resumeToRender;
+        }
 
         Context context = new Context();
-        context.setVariable("resume", resume);
+        context.setVariable("resume", resumeToRender);
 
         return stringTemplateEngine.process("resume", context);
     }
@@ -121,14 +135,14 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
         return super.getResumeData();
     }
 
+    @Override
     public byte[] generatePDF() {
+        System.out.println("GENERATING PDF");
+
         // 1. Generate resume HTML using Thymeleaf
         String html = renderResume();
 
         log.info("Generated HTML for PDF: {}", html.substring(0, Math.min(200, html.length())));
-
-        // 2. Send HTML to Puppeteer microservice
-        String puppeteerUrl = "http://localhost:3001/generate-pdf";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -142,11 +156,9 @@ public class AIResumeServiceImpl extends ResumeServiceImpl implements AIResumeSe
                 puppeteerUrl,
                 HttpMethod.POST,
                 requestEntity,
-                byte[].class
-        );
+                byte[].class);
 
         return response.getBody();
     }
-
 
 }
