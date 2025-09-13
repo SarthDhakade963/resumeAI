@@ -2,10 +2,14 @@ package com.resumeai.service;
 
 import com.resumeai.dto.Resume;
 
+import java.util.Map;
+
 public interface AIResumeService extends ResumeService{
-    Resume enhanceResume();
+    Resume sendResume();
 
-    String renderResume();
+    String saveResume(Resume resume);
 
-    public byte[] generatePDF();
+    String previewResume();
+
+    byte[] generatePDF();
 }

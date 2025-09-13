@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ResumeDownloadController {
     private final AIResumeService aiResumeService;
 
-    @GetMapping("/generate")
+    @GetMapping("/pdf")
     public ResponseEntity<byte[]> generateResume() {
         byte[] pdf = aiResumeService.generatePDF();
 

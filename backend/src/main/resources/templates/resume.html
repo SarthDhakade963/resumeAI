@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="eng">
 
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,16 @@
     <style>
         .centered {
             text-align: center;
+        }
+
+        body {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 4px;
         }
     </style>
 </head>
@@ -29,8 +39,10 @@
     <h2>Education</h2>
     <div th:utext="${resume.education}"></div>
 
-    <h2>Work Experience</h2>
-    <div th:utext="${resume.workExperience}"></div>
+    <div th:if="${resume.workExperience != null and #strings.isNotEmpty(resume.workExperience)}">
+        <h2>Work Experience</h2>
+        <div th:utext="${resume.workExperience}"></div>
+    </div>
 </body>
 
 </html>

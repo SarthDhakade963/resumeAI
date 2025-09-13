@@ -254,7 +254,7 @@ const ProfileSetup = () => {
                   required
                   placeholder="Write a brief summary about yourself, your skills, and experience..."
                   rows={4}
-                  maxLength={500}
+                  maxLength={5000}
                   className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-gray-100 focus:border-gray-700 transition-all duration-200 text-gray-800 placeholder-gray-500 resize-none"
                 />
                 <div className="absolute bottom-3 right-3 flex items-center space-x-2">

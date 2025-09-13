@@ -1,24 +1,25 @@
 package com.resumeai.mapper;
 
 import com.resumeai.dto.*;
-import com.resumeai.model.User;
+import com.resumeai.dto.Resume;
+import com.resumeai.model.*;
 
 import java.util.List;
 
 public class ResumeMapper {
-    public static ResumeDTO toDTO(UserDTO user,
-                                  List<SkillDTO> skills,
-                                  List<ProjectDTO> projects,
-                                  List<EducationDTO> educations,
-                                  List<WorkExperienceDTO> workExperiences
+    public static ResumeDTO toDTO(User user,
+                                  List<Skill> skills,
+                                  List<Project> projects,
+                                  List<Education> educations,
+                                  List<WorkExperience> workExperiences
     )
     {
         return ResumeDTO.builder()
-                .user(user)
-                .skills(skills)
-                .projects(projects)
-                .educations(educations)
-                .workExperiences(workExperiences)
+                .user(UserMapper.toDTO(user))
+                .skills(skills.stream().map(SkillMapper::toDTO).toList())
+                .projects(projects.stream().map(ProjectMapper::toDto).toList())
+                .educations(educations.stream().map(EducationMapper::toDTO).toList())
+                .workExperiences(workExperiences.stream().map(WorkExperienceMapper::toDTO).toList())
                 .build();
     }
 }

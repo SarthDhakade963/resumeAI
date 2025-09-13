@@ -22,7 +22,7 @@ WORKDIR /app
 RUN mkdir -p /root/resumai/uploads/profile-pics
 
 # Copy default user.png
-COPY user.png /root/resumai/uploads/profile-pics/
+COPY user.png /root/resumai/uploads/profile-pics
 
 # Copy the built jar file
 COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
