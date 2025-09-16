@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="eng">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="${resume.name} + ' - Resume'">Resume</title>
@@ -39,7 +38,7 @@
     <h2>Education</h2>
     <div th:utext="${resume.education}"></div>
 
-    <div th:if="${resume.workExperience != null and #strings.isNotEmpty(resume.workExperience)}">
+    <div th:if="${resume.workExperience != null}">
         <h2>Work Experience</h2>
         <div th:utext="${resume.workExperience}"></div>
     </div>

@@ -498,8 +498,8 @@ export default function EducationForm() {
                     </label>
                     <select
                       value={
-                        education.degree === "Other"
-                          ? "Other"
+                        education.degree === "None"
+                          ? "None"
                           : education.degree
                       }
                       onChange={(e) =>

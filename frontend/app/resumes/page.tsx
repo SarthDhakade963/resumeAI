@@ -42,7 +42,7 @@ export default function ResumePage() {
 
   const saveResume = async () => {
     if (!resume) return;
-
+    console.log("Updated resume sent to backend", resume);
     try {
       const res = await fetchWithToken("/user/resumes/save", {
         method: "POST",
@@ -52,11 +52,19 @@ export default function ResumePage() {
 
       if (!res.ok) throw new Error("Preview failed"); // backend returns error if Thymeleaf fails
 
-      const data = await res.json();
+      const data = await res.text();
 
-      localStorage.setItem("resumePreview", data.previewHtml);
+      console.log("Data from backend", data);
 
-      router.push("/preview");
+      if (data.startsWith("Error while previewing resume")) {
+        alert(
+          "Error generating preview. Please fix your content and try again."
+        );
+      }
+      
+      if (data.startsWith("Resume saved ")) {
+        router.push("resumes/preview");
+      }
     } catch (err) {
       console.error(err);
       alert("Error generating preview. Please fix your content and try again.");
@@ -121,7 +129,7 @@ export default function ResumePage() {
 
       <style jsx>{`
         textarea {
-          height: "150px";
+          height: 150px;
         }
 
         .resume-container {

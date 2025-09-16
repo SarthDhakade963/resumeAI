@@ -23,11 +23,11 @@ public class ResumeViewController {
     }
 
     @GetMapping("/user/resumes/data")
-    public ResponseEntity<Resume> getResumeDataForFrontend() {
+    public ResponseEntity<Resume> getResumeDataToFrontend() {
         return ResponseEntity.ok(aiResumeService.sendResume()); // <-- sends JSON to frontend
     }
 
-    @PostMapping("/user/resumes/preview")
+    @GetMapping("/user/resumes/preview")
     public ResponseEntity<String> previewResume() {
         try {
             return ResponseEntity.ok(aiResumeService.previewResume());

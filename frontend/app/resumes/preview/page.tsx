@@ -36,7 +36,7 @@ const ResumePreview = () => {
   const downloadPdf = async () => {
     try {
       const res = await fetchWithToken("/user/resumes/pdf", {
-        method: "POST",
+        method: "GET",
         headers: { "Content-Type": "application/json" },
       });
 
