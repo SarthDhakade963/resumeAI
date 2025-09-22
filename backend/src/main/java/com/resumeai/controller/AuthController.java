@@ -38,7 +38,6 @@ public class AuthController {
     // Create a new user
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@Valid  @RequestBody LoginRequestDTO loginReq) {
-
         System.out.println(loginReq);
         return userService.validateCredentials(loginReq.getEmail(), loginReq.getPassword())
                 .map(user -> {

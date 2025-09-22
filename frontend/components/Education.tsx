@@ -110,7 +110,7 @@ export default function EducationForm() {
     "Master of Business Administration (MBA)",
     "Master of Technology (MTech)",
     "Doctor of Philosophy (PhD)",
-    "Other",
+    "None",
   ];
 
   const validateForm = () => {
@@ -498,8 +498,8 @@ export default function EducationForm() {
                     </label>
                     <select
                       value={
-                        education.degree === "Other"
-                          ? "Other"
+                        education.degree === "None"
+                          ? "None"
                           : education.degree
                       }
                       onChange={(e) =>
@@ -514,16 +514,6 @@ export default function EducationForm() {
                         </option>
                       ))}
                     </select>
-                    {education.degree === "Other" && (
-                      <input
-                        placeholder="Please specify your degree"
-                        value={customDegrees[index] || ""}
-                        onChange={(e) =>
-                          handleChange(index, "degree", e.target.value)
-                        }
-                        className={`${inputClasses(`degree-${index}`)} mt-2`}
-                      />
-                    )}
                     {errors[`degree-${index}`] && (
                       <p className="mt-1 text-sm text-red-600">
                         {errors[`degree-${index}`]}

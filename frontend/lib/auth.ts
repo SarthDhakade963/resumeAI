@@ -10,6 +10,10 @@ interface AuthUser {
   email: string;
 }
 
+console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
+console.log("GOOGLE_CLIENT_ID:", !!process.env.GOOGLE_CLIENT_ID);
+console.log("GOOGLE_CLIENT_SECRET:", !!process.env.GOOGLE_CLIENT_SECRET);
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -37,7 +41,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials.password) return null;
         try {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_SPRING_BASE_URL}/auth/login`,
+            `http://backend:8080/auth/login`,
             {
               method: "POST",
               headers: {
@@ -117,7 +121,7 @@ export const authOptions: NextAuthOptions = {
       if (account && profile && !token.accessToken) {
         try {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_SPRING_BASE_URL}/auth/oauth-login`,
+            `http://backend:8080/auth/oauth-login`,
             {
               method: "POST",
               headers: {

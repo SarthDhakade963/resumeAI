@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXT_PUBLIC_SPRING_BASE_URL=http://backend:8080
+    extra_hosts:
+      - "localhost:host-gateway"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./backend/.env.local
+    depends_on:
+      - db
+      - puppeteer
+      - ollama
+    volumes:
+      - ./uploads:/root/resumai/uploads
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: resumeai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5600:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  puppeteer:
+    build:
+      context: ./backend/pdf-service
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    extra_hosts:
+      - "localhost:host-gateway"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

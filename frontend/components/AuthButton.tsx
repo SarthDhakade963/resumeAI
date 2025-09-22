@@ -112,7 +112,7 @@ export default function AuthButton() {
             >
               <Image
                 src="/github-sign.png"
-                alt="Google"
+                alt="Github"
                 width={23}
                 height={23}
               />
@@ -124,7 +124,7 @@ export default function AuthButton() {
               onClick={() => signIn("linkedin")}
               className="w-12 h-12 p-0 flex items-center justify-center bg-white border-2 border-gray-200 rounded-full shadow hover:shadow-md transition hover:bg-gray-300"
             >
-              <Image src="/linkedin.png" alt="Google" width={25} height={25} />
+              <Image src="/linkedin.png" alt="LinkedIn" width={25} height={25} />
             </Button>
           </div>
         </div>

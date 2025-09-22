@@ -1,0 +1,14 @@
+node_modules
+.next
+
+.git
+.gitignore
+Dockerfile
+README.md
+
+*.log
+*.tmp
+
+*.iml
+.idea/
+.vscode/

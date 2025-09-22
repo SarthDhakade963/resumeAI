@@ -43,6 +43,7 @@ export default function SkillsForm() {
   }>({});
 
   const suggestionRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const inputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
 
   // Popular skills for suggestions
   const popularSkills = [
@@ -144,6 +145,14 @@ export default function SkillsForm() {
       setShowSuggestions(newShowSuggestions);
       setActiveSuggestion(newActiveSuggestion);
     }
+  };
+
+  // Handle input blur
+  const handleInputBlur = (index: number) => {
+    // Use setTimeout to allow suggestion clicks to register before hiding
+    setTimeout(() => {
+      setShowSuggestions((prev) => ({ ...prev, [index]: false }));
+    }, 150);
   };
 
   // Validate form
@@ -318,16 +327,20 @@ export default function SkillsForm() {
   // Close suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      const clickedOutside = Object.values(suggestionRefs.current).every(
-        (ref) => {
-          return ref && !ref.contains(e.target as Node);
-        }
+      const target = e.target as HTMLElement;
+
+      // Check if click is outside all suggestion dropdowns and inputs
+      const clickedOnSuggestion = Object.values(suggestionRefs.current).some(
+        (ref) => ref && ref.contains(target)
       );
 
-      const clickedOnInput = (e.target as HTMLElement).tagName === "INPUT";
+      const clickedOnInput = Object.values(inputRefs.current).some(
+        (ref) => ref && ref.contains(target)
+      );
 
-      if (clickedOutside && !clickedOnInput) {
+      if (!clickedOnSuggestion && !clickedOnInput) {
         setShowSuggestions({});
+        setActiveSuggestion({});
       }
     };
 
@@ -424,6 +437,7 @@ export default function SkillsForm() {
                       onKeyDown={(e) => handleKeyDown(index, e)}
                       onClick={() => handleInputClick(index)}
                       onFocus={() => handleInputClick(index)}
+                      onBlur={() => handleInputBlur(index)}
                       className={inputClasses(`skillName-${index}`)}
                       autoComplete="off"
                     />

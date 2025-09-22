@@ -21,7 +21,12 @@ app.post("/generate-pdf", async (req, res) => {
   try {
     browser = await puppeteer.launch({
       headless: "new", // ensures headless works cleanly
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+      ],
     });
 
     const page = await browser.newPage();
@@ -36,6 +41,7 @@ app.post("/generate-pdf", async (req, res) => {
     res.setHeader("Content-Disposition", "attachment; filename=resume.pdf");
     res.setHeader("Content-Length", pdfBuffer.length);
 
+    console.log("PDF CREATED SUCESSFULLY!");
     return res.end(pdfBuffer);
   } catch (error) {
     console.error("PDF generation failed:", error);

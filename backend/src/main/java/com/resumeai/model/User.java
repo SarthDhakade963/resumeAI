@@ -27,6 +27,7 @@ public class User extends Auditable {
     @Column(unique = true)
     public String username;
 
+    @Column(columnDefinition = "TEXT")
     private String summary;
 
     @Column(unique = true, nullable = false)
@@ -37,9 +38,11 @@ public class User extends Auditable {
     private String profilePicUrl;  // store image path instead of File
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean fresher = false;
 
     @Column(name = "profile_completed", nullable = false)
+    @Builder.Default
     private boolean profileCompleted = false;
 
     // --- Direct ownership ---
